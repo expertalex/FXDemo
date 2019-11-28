@@ -1,0 +1,100 @@
+@model FXDemo.Models.Match
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Match</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HouseTeamManager)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HouseTeamManager.Name) - ( @Html.DisplayFor(model => model.HouseTeamManager.TeamName) )
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.AwayTeamManager)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.AwayTeamManager.Name) - ( @Html.DisplayFor(model => model.AwayTeamManager.TeamName) )
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Referee)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Referee.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HouseTeamPlayers)
+        </dt>
+        <dd class="col-sm-10">
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>Number</th>
+                    <th>Team</th>
+                </tr>
+                @foreach (var item in Model.HouseTeamPlayers)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Player.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Player.Number)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Player.TeamName)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AwayTeamPlayers)
+        </dt>
+        <dd class="col-sm-10">
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>Number</th>
+                    <th>Team</th>
+                </tr>
+                @foreach (var item in Model.AwayTeamPlayers)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Player.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Player.Number)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Player.TeamName)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
