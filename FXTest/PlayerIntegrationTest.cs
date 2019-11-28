@@ -34,6 +34,8 @@ namespace FXTest
 
             Assert.Equal(HttpStatusCode.OK, responce.StatusCode);
 
+
+            // TODO: More tests... 
         }
     }
 }

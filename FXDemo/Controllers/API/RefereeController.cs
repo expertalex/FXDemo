@@ -107,10 +107,12 @@ namespace FXDemo.Controllers.API
         {
             // TODO: Refactor in Request and Reponce (Quico fix)
             // referee.Id = 0;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
 
             var mapper = _mappingConfiguration.CreateMapper();
-
-
             var createdRefere = mapper.Map<Referee>(referee);
 
             _context.Referee.Add(createdRefere);

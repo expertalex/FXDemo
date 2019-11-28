@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using FXDemo.Contracts;
 
 namespace FXDemo.Models
 {
-    public class Manager: IManager
+    public class Manager: IParticipantId, IManager, ITeamMember
     {
         
         [Key]
@@ -19,18 +20,11 @@ namespace FXDemo.Models
         [Required]
         [ForeignKey("Team")]
         public string TeamName { get; set; }
+        [JsonIgnore]
         public Team Team { get; set; }
 
         [NotMapped]
-        public int ControllerId
-        {
-            get
-            {
-                return -Id;
-            }
-        }
-
-        [NotMapped]
+        [JsonIgnore]
         public string TeamId
         {
             get
@@ -51,6 +45,26 @@ namespace FXDemo.Models
         [DefaultValue(0)]
         public int RedCards { get; set; }
 
+
+        [NotMapped]
+        [JsonIgnore]
+        public int ControllerId
+        {
+            get
+            {
+                return -Id; // Important:  Convetion (-n = Managers, +n Players)
+            }
+        }
+
+        public bool IsManager()
+        {
+            return this.ControllerId < 0;
+        }
+
+        public bool IsPlayer()
+        {
+            return this.ControllerId > 0;
+        }
 
 
         /* Not implemented to avoid manual maping....

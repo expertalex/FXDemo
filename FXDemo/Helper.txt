@@ -35,6 +35,8 @@ dotnet aspnet-codegenerator controller -name {PluralModuleName}Controller -async
 dotnet aspnet-codegenerator controller -name PlayerController -async -api -m Player -dc FXDataContext -outDir Controllers/API
 dotnet aspnet-codegenerator controller -name ManagerController -async -api -m Manager -dc FXDataContext -outDir Controllers/API
 dotnet aspnet-codegenerator controller -name RefereeController -async -api -m Referee -dc FXDataContext -outDir Controllers/API
+dotnet aspnet-codegenerator controller -name MatchController -async -api -m Match -dc FXDataContext -outDir Controllers/API
+dotnet aspnet-codegenerator controller -name StatisticsController -async -api -m GeneralStatisiticResponce -dc FXDataContext -outDir Controllers/API
 
 
 X+1. Migrations

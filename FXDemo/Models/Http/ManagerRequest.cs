@@ -1,10 +1,13 @@
 ﻿using System;
+using FXDemo.Contracts;
+
 namespace FXDemo.Models.Http
 {
-    public class ManagerRequest
+    public class ManagerRequest : IManager
     {
-        public ManagerRequest()
-        {
-        }
+        public string Name { get ; set ; }
+        public string TeamName { get; set; }
+        public int RedCards { get ; set; }
+        public int YellowCards { get ; set ; }
     }
 }

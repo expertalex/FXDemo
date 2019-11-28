@@ -12,7 +12,7 @@ namespace FXDemo.Models
 
     // Acts like player responce, becuase it is the most complete.
     // TODO: Automaping
-    public class Player : IPlayer, ITeamMember
+    public class Player : IParticipantId, IPlayer, ITeamMember
     {
 
         [Key]
@@ -30,16 +30,6 @@ namespace FXDemo.Models
         
         [JsonIgnore]
         public Team Team { get; set; }
-
-        [NotMapped]
-        [JsonIgnore]
-        public int ControllerId
-        {
-            get
-            {
-                return Id;
-            }
-        }
 
         [NotMapped]
         [JsonIgnore]
@@ -72,6 +62,27 @@ namespace FXDemo.Models
         [JsonIgnore]
         [InverseProperty("Player")]
         public ICollection<MatchPlayersAway> AwayTeamPlayers { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        public int ControllerId
+        {
+            get
+            {
+                return Id;
+            }
+        }
+
+        public bool IsManager()
+        {
+            return this.ControllerId < 0;
+        }
+
+        public bool IsPlayer()
+        {
+            return this.ControllerId > 0;
+        }
+
 
     }
 }

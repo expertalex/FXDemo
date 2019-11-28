@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using FXDemo.Data;
 using FXDemo.Models;
 using AutoMapper;
+using FXDemo.Models.Http;
+using AutoMapper.QueryableExtensions;
 
 namespace FXDemo.Controllers.API
 {
@@ -31,40 +33,66 @@ namespace FXDemo.Controllers.API
 
         // GET: api/Manager
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Manager>>> GetManager()
+        public async Task<ActionResult<IEnumerable<ManagerResponse>>> GetManager()
         {
-            return await _context.Manager.ToListAsync();
+
+            var query = _context.Manager.ProjectTo<ManagerResponse>(_mappingConfiguration);
+            var responce = await query.ToListAsync();
+
+            return responce;
         }
 
         // GET: api/Manager/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Manager>> GetManager(int id)
+        public async Task<ActionResult<ManagerResponse>> GetManager(int id)
         {
-            var manager = await _context.Manager.FindAsync(id);
+            // Important in order to alow -+ ids being passed to controler
+            var manager = await _context.Manager.FindAsync(Math.Abs(id));
 
             if (manager == null)
             {
                 return NotFound();
             }
 
-            return manager;
+            var mapper = _mappingConfiguration.CreateMapper();
+            var responce = mapper.Map<ManagerResponse>(manager);
+            return responce;
         }
 
         // PUT: api/Manager/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutManager(int id, Manager manager)
+        public async Task<IActionResult> PutManager(int id, ManagerRequest manager)
         {
-            if (id != manager.Id)
+
+            // manager = ManagerRequest(manager, id);
+
+            if (manager == null)
+            {
+                return BadRequest();
+            }
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
 
-            _context.Entry(manager).State = EntityState.Modified;
+            var existingManager = await _context.Manager.FindAsync(Math.Abs(id));
+            if (existingManager == null)
+            {
+                return NotFound();
+            }
+
+            var mapper = _mappingConfiguration.CreateMapper();
 
             try
             {
+                // Important:
+                // Validate Team, Add if not exists....
+                await this.CheckTeamAsync(manager.TeamName);
+                
+                mapper.Map(manager, existingManager);
+                _context.Manager.Update(existingManager);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -79,6 +107,7 @@ namespace FXDemo.Controllers.API
                 }
             }
 
+            return Ok();
             return NoContent();
         }
 
@@ -86,19 +115,38 @@ namespace FXDemo.Controllers.API
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Manager>> PostManager(Manager manager)
+        public async Task<ActionResult<ManagerResponse>> PostManager(ManagerRequest manager)
         {
-            _context.Manager.Add(manager);
+
+            // manager = ManagerRequest(manager);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var mapper = _mappingConfiguration.CreateMapper();
+            var createdManager = mapper.Map<Manager>(manager);
+
+            // Important:
+            // Validate Team, Add if not exists....
+            await this.CheckTeamAsync(manager.TeamName);
+
+            _context.Manager.Add(createdManager);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetManager", new { id = manager.Id }, manager);
+
+            var managerRsponce = mapper.Map<ManagerResponse>(createdManager);
+            // managerRsponce.Id = -managerRsponce.Id;
+
+            return CreatedAtAction("GetManager", new { id = managerRsponce.Id }, managerRsponce);
         }
 
         // DELETE: api/Manager/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Manager>> DeleteManager(int id)
+        public async Task<ActionResult<ManagerResponse>> DeleteManager(int id)
         {
-            var manager = await _context.Manager.FindAsync(id);
+            var manager = await _context.Manager.FindAsync(Math.Abs(id));
             if (manager == null)
             {
                 return NotFound();
@@ -107,12 +155,29 @@ namespace FXDemo.Controllers.API
             _context.Manager.Remove(manager);
             await _context.SaveChangesAsync();
 
-            return manager;
+            var mapper = _mappingConfiguration.CreateMapper();
+
+            return mapper.Map<ManagerResponse>(manager);
         }
+
+
+        public async Task CheckTeamAsync(string name)
+        {
+            // Important:
+            // Validate Team, Add if not exists....
+            // TODO: Refactor
+            var team = await _context.Team.FindAsync(name);
+            if (team == null)
+            {
+                _context.Team.Add(new Team { TeamName = name });
+                // _context.SaveChangesAsync();
+            }
+        }
+
 
         private bool ManagerExists(int id)
         {
-            return _context.Manager.Any(e => e.Id == id);
+            return _context.Manager.Any(e => e.Id == Math.Abs(id));
         }
     }
 }

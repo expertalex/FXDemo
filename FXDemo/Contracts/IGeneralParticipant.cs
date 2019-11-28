@@ -14,7 +14,7 @@ namespace FXDemo.Contracts
         public int MinutesPlayed { get; set; }
     }
 
-    public interface IGeneralParticipant 
+    public interface IParticipantName
     {
         public string Name { get; set; }
     }
@@ -23,6 +23,9 @@ namespace FXDemo.Contracts
     {
         public string TeamName { get; set; }
         public Team Team { get; set; }
+
+        public bool IsPlayer();
+        public bool IsManager();
     }
 
 
@@ -33,21 +36,37 @@ namespace FXDemo.Contracts
     }
 
 
-    public interface IPlayer : IParticipantId, IGeneralParticipant, ICardOwner, IPlayeTime
+    // TODO: Remove IParticipantId
+    public interface IPlayer : IParticipantId, IParticipantName, ICardOwner, IPlayeTime
     {
         public int Number { get; set; }
         public string TeamName { get; set; }
 
     }
 
-    public interface IReferee : IGeneralParticipant, IPlayeTime
+    public interface IReferee : IParticipantName, IPlayeTime
     {
     }
 
-    public interface IManager : IGeneralParticipant, ICardOwner
+    public interface IManager : IParticipantName, ICardOwner
     {
         public string TeamName { get; set; }
 
+    }
+
+
+    public interface IMatch 
+    {
+        // TODO
+        public string Name { get; set; }
+        public DateTime Date { get; set; }
+    }
+
+    public interface IGeneralReport
+    {
+        int Id { get; set; }
+        public string Name { get; set; }
+        public int Total { get; set; }
     }
 
 

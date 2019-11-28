@@ -10,31 +10,40 @@ namespace FXDemo.Infrastructure
         public MappingProfile()
         {
 
-            CreateMap<Player, PlayerResponse>();
-            CreateMap<Player, PlayerRequest>();
             CreateMap<PlayerRequest, Player>();
-            CreateMap<PlayerRequest, PlayerResponse>();
+            CreateMap<Player, PlayerResponse>();
 
-            // CreateMap<Referee, RefereeRequest>();
             CreateMap<RefereeRequest, Referee>();
-            CreateMap<RefereeRequest, Manager>();
-            CreateMap<RefereeRequest, Match>();
-            CreateMap<RefereeRequest, Match>();
-
-            // TODO: Map both and use both.... 
-            /*
-            CreateMap<Manager, ManagerResponse>();
-            CreateMap<Manager, ManagerRequest>();
-
             CreateMap<Referee, RefereeResponse>();
-            CreateMap<Referee, RefereeRequest>();
 
+            CreateMap<ManagerRequest, Manager>();
+            CreateMap<Manager, ManagerResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => -src.Id)); // Very Important in order to return -n as id for Managers
+
+            CreateMap<MatchRequest, Match>();
             CreateMap<Match, MatchResponse>();
-            CreateMap<Match, MatchRequest>();
 
-            CreateMap<Card, CardResponse>();
-            CreateMap<Minute, MinuteResponse>();
-            */
+
+            CreateMap<Player, MinuteResponse>()
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.MinutesPlayed));
+            CreateMap<Referee, MinuteResponse>()
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.MinutesPlayed));
+
+            // TODO: Think about better desing...
+            CreateMap<Manager, YelowCardResponse>()
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.YellowCards));
+            CreateMap<Player, YelowCardResponse>()
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.YellowCards));
+
+            CreateMap<Manager, RedCardResponse>()
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.YellowCards));
+            CreateMap<Player, RedCardResponse>()
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.YellowCards));
+
+
+            // TODO: Remove 2
+            CreateMap<PlayerRequest, PlayerResponse>();
+            CreateMap<Player, PlayerRequest>();
 
 
         }

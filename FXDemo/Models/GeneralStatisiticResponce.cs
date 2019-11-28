@@ -1,11 +1,12 @@
 ﻿using System;
+using FXDemo.Contracts;
+
 namespace FXDemo.Models
 {
-    public class Card
+    public class GeneralStatisiticResponce : IGeneralReport
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string TeamName { get; set; }
-        public string Total { get; set; }
+        public int Total { get; set; }
     }
 }

@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "FXWorker": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

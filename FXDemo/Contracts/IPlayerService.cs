@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FXDemo.Data;
 using FXDemo.Models;
 using FXDemo.Models.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace FXDemo.Contracts
 {

@@ -32,7 +32,9 @@ namespace FXDemo.Services
 
             var query = _context.Player.ProjectTo<PlayerResponse>(_mappingConfiguration);
 
-            return await query.ToListAsync();
+            var responce = await query.ToListAsync();
+
+            return responce;
 
             // return await _context.Player.ToListAsync();
         }

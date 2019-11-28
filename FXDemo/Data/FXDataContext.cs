@@ -61,5 +61,16 @@ namespace FXDemo.Data
         }
         */
 
+        public DbSet<FXDemo.Models.GeneralStatisiticResponce> GeneralStatisiticResponce { get; set; }
+
+
+
+        /*
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+        }
+        */
+
     }
 }
