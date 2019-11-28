@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FXDemo.Contracts;
 
 namespace FXDemo.Models
 {
-    public class Manager
+    public class Manager: IManager
     {
         
         [Key]
@@ -40,13 +42,15 @@ namespace FXDemo.Models
                 this.TeamName = value;
             }
         }
-        
 
+        [Required]
+        [DefaultValue(0)]
         public int YellowCards { get; set; }
 
+        [Required]
+        [DefaultValue(0)]
         public int RedCards { get; set; }
 
-        public int MinutesPlayed { get; set; }
 
 
         /* Not implemented to avoid manual maping....

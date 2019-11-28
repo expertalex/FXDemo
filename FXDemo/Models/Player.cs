@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using FXDemo.Contracts;
+using System.ComponentModel;
 
 namespace FXDemo.Models
 {
-
 
     // Acts like player responce, becuase it is the most complete.
     // TODO: Automaping
@@ -27,12 +27,11 @@ namespace FXDemo.Models
         [Required]
         [ForeignKey("Team")]
         public string TeamName { get; set; }
-        [BindNever]
+        
         [JsonIgnore]
         public Team Team { get; set; }
 
         [NotMapped]
-        [BindNever]
         [JsonIgnore]
         public int ControllerId
         {
@@ -43,7 +42,6 @@ namespace FXDemo.Models
         }
 
         [NotMapped]
-        [BindNever]
         [JsonIgnore]
         public string TeamId
         {
@@ -58,19 +56,20 @@ namespace FXDemo.Models
         }
 
         [Required]
+        [DefaultValue(0)]
         public int YellowCards { get; set; }
         [Required]
+        [DefaultValue(0)]
         public int RedCards { get; set; }
         [Required]
+        [DefaultValue(0)]
         public int MinutesPlayed { get; set; }
 
         [JsonIgnore]
-        [BindNever]
         [InverseProperty("Player")]
         public ICollection<MatchPlayersHouse> HouseTeamPlayers { get; set; }
 
         [JsonIgnore]
-        [BindNever]
         [InverseProperty("Player")]
         public ICollection<MatchPlayersAway> AwayTeamPlayers { get; set; }
 

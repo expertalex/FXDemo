@@ -71,10 +71,10 @@ namespace FXDemo.Data
 
             var managers = new Manager[]
             {
-                new Manager{ Name="Pep", TeamName=teams[0].TeamName, YellowCards=0, RedCards=0, MinutesPlayed=0 },
-                new Manager{ Name="Pep Helper", TeamName=teams[0].TeamName, YellowCards=0, RedCards=0, MinutesPlayed=0 },
-                new Manager{ Name="Zidan", TeamName=teams[1].TeamName, YellowCards=1, RedCards=2, MinutesPlayed=3 },
-                new Manager{ Name="Zidan Helper", TeamName=teams[1].TeamName, YellowCards=10, RedCards=11, MinutesPlayed=12 },
+                new Manager{ Name="Pep", TeamName=teams[0].TeamName, YellowCards=0, RedCards=0, },
+                new Manager{ Name="Pep Helper", TeamName=teams[0].TeamName, YellowCards=0, RedCards=0, },
+                new Manager{ Name="Zidan", TeamName=teams[1].TeamName, YellowCards=1, RedCards=2,  },
+                new Manager{ Name="Zidan Helper", TeamName=teams[1].TeamName, YellowCards=10, RedCards=11,},
 
             };
             foreach (Manager manager in managers)

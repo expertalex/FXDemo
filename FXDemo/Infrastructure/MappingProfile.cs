@@ -15,12 +15,19 @@ namespace FXDemo.Infrastructure
             CreateMap<PlayerRequest, Player>();
             CreateMap<PlayerRequest, PlayerResponse>();
 
+            // CreateMap<Referee, RefereeRequest>();
+            CreateMap<RefereeRequest, Referee>();
+            CreateMap<RefereeRequest, Manager>();
+            CreateMap<RefereeRequest, Match>();
+            CreateMap<RefereeRequest, Match>();
+
+            // TODO: Map both and use both.... 
             /*
             CreateMap<Manager, ManagerResponse>();
             CreateMap<Manager, ManagerRequest>();
 
             CreateMap<Referee, RefereeResponse>();
-            CreateMap<Manager, RefereeRequest>();
+            CreateMap<Referee, RefereeRequest>();
 
             CreateMap<Match, MatchResponse>();
             CreateMap<Match, MatchRequest>();

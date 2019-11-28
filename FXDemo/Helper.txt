@@ -24,9 +24,6 @@ dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Utils
 X. Add API Controller
 dotnet aspnet-codegenerator controller -h
 dotnet aspnet-codegenerator controller -name {PluralModuleName}Controller -m {ModuleName} -dc {ContextName}Context --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
-dotnet aspnet-codegenerator controller -name {PluralModuleName}Controller -async -api -m {ModuleName} -dc {ContextName}Context -outDir Controllers
-
-# Practical Use MVC
 
 dotnet aspnet-codegenerator controller -name PlayersController -m Player -dc FXDataContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
 dotnet aspnet-codegenerator controller -name ManagersController -m Manager -dc FXDataContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
@@ -34,11 +31,10 @@ dotnet aspnet-codegenerator controller -name TeamsController -m Team -dc FXDataC
 dotnet aspnet-codegenerator controller -name MatchesController -m Match -dc FXDataContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
 dotnet aspnet-codegenerator controller -name RefereesController -m Referee -dc FXDataContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
 
-
-
-# Practical Use API
+dotnet aspnet-codegenerator controller -name {PluralModuleName}Controller -async -api -m {ModuleName} -dc {ContextName}Context -outDir Controllers
 dotnet aspnet-codegenerator controller -name PlayerController -async -api -m Player -dc FXDataContext -outDir Controllers/API
-
+dotnet aspnet-codegenerator controller -name ManagerController -async -api -m Manager -dc FXDataContext -outDir Controllers/API
+dotnet aspnet-codegenerator controller -name RefereeController -async -api -m Referee -dc FXDataContext -outDir Controllers/API
 
 
 X+1. Migrations

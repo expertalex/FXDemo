@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace FXDemo.Models
 {
@@ -35,6 +36,7 @@ namespace FXDemo.Models
 
 
         // It indicates that a match has one, and only one, Referee.
+        [ForeignKey("Referee")]
         public int RefereeId { get; set; }
         public Referee Referee { get; set; }
 

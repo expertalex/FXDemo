@@ -59,10 +59,7 @@ namespace FXDemo.Controllers.API
 
             // This line changes the default behaviour and Creats full Player == PlayerResponce
             // To avoid unnecesary module creation, the base Player module is uses as more complete, responce moduel.
-            if (player.Id == 0)
-            {
-                player.Id = id;
-            }
+            player.Id = id;
 
             if (id != player.Id)
             {
@@ -103,6 +100,8 @@ namespace FXDemo.Controllers.API
         [HttpPost]
         public async Task<ActionResult<PlayerResponse>> PostPlayer([FromBody] PlayerRequest player)
         {
+            player.Id = 0;
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
