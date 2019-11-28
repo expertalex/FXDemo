@@ -1,0 +1,47 @@
+﻿# Comand Line Helper and instructions
+
+
+
+
+1. Create MVC Project
+
+2. Trsut 
+dotnet dev-certs https --trust
+
+
+2. Add Packages
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.SQLite
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.InMemory
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Code
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Utils
+
+
+X. Add API Controller
+dotnet aspnet-codegenerator controller -h
+dotnet aspnet-codegenerator controller -name {PluralModuleName}Controller -m {ModuleName} -dc {ContextName}Context --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+dotnet aspnet-codegenerator controller -name {PluralModuleName}Controller -async -api -m {ModuleName} -dc {ContextName}Context -outDir Controllers
+
+# Practical Use MVC
+
+dotnet aspnet-codegenerator controller -name PlayersController -m Player -dc FXDataContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+dotnet aspnet-codegenerator controller -name ManagersController -m Manager -dc FXDataContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+dotnet aspnet-codegenerator controller -name TeamsController -m Team -dc FXDataContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+dotnet aspnet-codegenerator controller -name MatchesController -m Match -dc FXDataContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+dotnet aspnet-codegenerator controller -name RefereesController -m Referee -dc FXDataContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+
+
+
+# Practical Use API
+dotnet aspnet-codegenerator controller -name PlayerController -async -api -m Player -dc FXDataContext -outDir Controllers/API
+
+
+
+X+1. Migrations
+
+dotnet ef migrations add InitialCreate
+dotnet ef database update
