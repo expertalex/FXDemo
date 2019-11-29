@@ -66,6 +66,11 @@ namespace FXDemo.Controllers.API
             try
             {
                 var responce = await _service.UpdateMatchAsync(match, id);
+                if (responce == null)
+                {
+                    return BadRequest(ModelState);
+                }
+                return Ok(responce);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -79,7 +84,7 @@ namespace FXDemo.Controllers.API
                 }
             }
 
-            return Ok();
+            // return Ok();
             // return NoContent();
         }
 

@@ -434,7 +434,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Hasdasdadasey\",\n\t\"teamName\":\t\"FCB\",\n\t\"yellowCards\": 2,\n\t\"redCards\": 4\n}",
+					"raw": "{\n\t\"name\": \"Hey\",\n\t\"teamName\":\t\"FCB\",\n\t\"yellowCards\": 2,\n\t\"redCards\": 4\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -442,7 +442,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:5001/api/manager/8",
+					"raw": "https://localhost:5001/api/manager/-12",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -451,7 +451,7 @@
 					"path": [
 						"api",
 						"manager",
-						"8"
+						"-12"
 					]
 				}
 			},
@@ -473,6 +473,70 @@
 						"api",
 						"manager",
 						"-8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:5001/api/Match/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://demofxapp.azurewebsites.net/api/Match/",
+					"protocol": "https",
+					"host": [
+						"demofxapp",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"Match",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:5001/api/Match/1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5001/api/Match/1",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"Match",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:5001/api/Match/3",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5001/api/Match/3",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"Match",
+						"3"
 					]
 				}
 			},
