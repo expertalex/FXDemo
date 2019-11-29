@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using FXDemo.Contracts;
 using FXDemo.Data;
 using System.Linq;
@@ -64,7 +63,7 @@ namespace FXDemo.Services
 
         public async Task<IEnumerable<MatchResponse>> GetMatcheAsync()
         {
-            // TODO: Refactor.... 
+            // TODO: Refactor.... (Manual mpping is not good.... )
             var match = await _context.Match.
                 Select(s => new MatchResponse
                 {
@@ -86,54 +85,128 @@ namespace FXDemo.Services
         {
 
 
+            // TODO:
+            // 2. Test
+            // 3. Refacture
 
-            var housePlayers = match.HouseTeam;
-            var awayPlayers = match.AwayTeam;
-            var houseManager = 0;
-            var awayManager = 0;
+            // Important: Not eficient, refactoring needed
+            ICollection<int> housePlayersId = match.HouseTeam.Where(c => c > 0).ToList();
+            ICollection<int> awayPlayersId = match.AwayTeam.Where(c => c > 0).ToList();
+            var houseManagerId = match.HouseTeam.Where(c => c < 0).FirstOrDefault(); // By convention, mnagers have negative id (TODO: Refacotr)
+            var awayManagerId = match.AwayTeam.Where(c => c < 0).FirstOrDefault(); // By convention, mnagers have negative id (TODO: Refacotr)
 
-
-
-            var _match = new Match(
-
-            );
-
-            await _context.Match.AddAsync(_match);
-            await _context.SaveChangesAsync();
-
-
-            foreach (int player in housePlayers)
+            houseManagerId = Math.Abs(houseManagerId);
+            awayManagerId = Math.Abs(awayManagerId);
+            // Validate
+            if (houseManagerId == awayManagerId)
             {
-                var matchInDataBase =_context.MatchPlayersHouse.Where(
-                            s =>
-                            s.Match.Id == _match.Id &&
-                            s.Player.Id == player
-                ).SingleOrDefault();
-
-                if (matchInDataBase == null)
-                {
-                    _context.MatchPlayersHouse.Add(new MatchPlayersHouse { MatchId = _match.Id, PlayerId = player });
-                }
+                return null;
+            }
+            if (housePlayersId.Count() != 11 || awayPlayersId.Count() != 11)
+            {
+                return null;
             }
 
-            foreach (int player in awayPlayers)
+            var houseManager = await _context.Manager.FindAsync(houseManagerId);
+            if(houseManager == null)
             {
-                var matchInDataBase = _context.MatchPlayersAway.Where(
-                            s =>
-                            s.Match.Id == _match.Id &&
-                            s.Player.Id == player
-                ).SingleOrDefault();
-
-                if (matchInDataBase == null)
-                {
-                    _context.MatchPlayersAway.Add(new MatchPlayersAway { MatchId = _match.Id, PlayerId = player });
-                }
+                return null;
+            }
+            var awayManager = await _context.Manager.FindAsync(awayManagerId);
+            if (houseManager == null)
+            {
+                return null;
+            }
+            var referee = await _context.Referee.FindAsync(match.Referee);
+            if (referee == null)
+            {
+                return null;
             }
 
-            await _context.SaveChangesAsync();
+            var _match = new Match
+            {
+                Name = match.Name,
+                HouseTeamManagerId = houseManagerId,
+                AwayTeamManagerId = awayManagerId,
+                RefereeId = match.Referee,
+                Date = match.Date,
+            };
 
+            // Cimented for in memeory DB 
+            //using (var transaction = _context.Database.BeginTransaction())
+            //{
 
-            return null;
+                try
+                {
+
+                    await _context.Match.AddAsync(_match);
+                    await _context.SaveChangesAsync();
+
+                    foreach (int playerId in housePlayersId)
+                    {
+                        var player = await _context.Player.FindAsync(playerId);
+                        if (player == null)
+                        {
+                            throw new ArgumentException("Player not found");
+                        }
+
+                        var matchInDataBase = _context.MatchPlayersHouse.Where(
+                                    s =>
+                                    s.Match.Id == _match.Id &&
+                                    s.Player.Id == playerId
+                        ).SingleOrDefault();
+
+                        if (matchInDataBase == null)
+                        {
+                            await _context.MatchPlayersHouse.AddAsync(new MatchPlayersHouse { MatchId = _match.Id, PlayerId = playerId });
+                        }
+                    }
+
+                    foreach (int playerId in awayPlayersId)
+                    {
+                        var player = await _context.Player.FindAsync(playerId);
+                        if (player == null)
+                        {
+                            throw new ArgumentException("Player not found");
+                        }
+
+                        var matchInDataBase = _context.MatchPlayersAway.Where(
+                                    s =>
+                                    s.Match.Id == _match.Id &&
+                                    s.Player.Id == playerId
+                        ).SingleOrDefault();
+
+                        if (matchInDataBase == null)
+                        {
+                            await _context.MatchPlayersAway.AddAsync(new MatchPlayersAway { MatchId = _match.Id, PlayerId = playerId });
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+                    // Commit transaction if all commands succeed, transaction will auto-rollback
+                    // when disposed if either commands fails
+                    //transaction.Commit();
+
+                }
+                catch (Exception)
+                {
+                    // TODO: Handle failure
+                    return null;
+                }
+            //}
+            var mapper = _mappingConfiguration.CreateMapper();
+            //return mapper.Map<MatchResponse>(_match);
+            // TODO: Map each child porpertyes to Responce
+            return new MatchResponse
+            {
+                Name = _match.Name,
+                HouseTeamManager = _match.HouseTeamManager,
+                AwayTeamManager = _match.AwayTeamManager,
+                Referee = _match.Referee,
+                Date = _match.Date,
+                HouseTeamPlayers = _match.HouseTeamPlayers.Select(o => o.Player).ToList(),
+                AwayTeamPlayers = _match.AwayTeamPlayers.Select(o => o.Player).ToList(),
+            };
 
         }
 
@@ -156,6 +229,7 @@ namespace FXDemo.Services
             throw new NotImplementedException();
         }
 
+        // TODO: Remove
         public FXDataContext getContext()
         {
             return this._context;

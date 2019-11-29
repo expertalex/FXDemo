@@ -108,7 +108,7 @@ namespace FXDemo.Controllers.API
             }
 
             return Ok();
-            return NoContent();
+            // return NoContent();
         }
 
         // POST: api/Manager

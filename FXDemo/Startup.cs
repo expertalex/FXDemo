@@ -55,10 +55,10 @@ namespace FXDemo
             */
 
             // Add Sqlite for Mac Dev
-            // services.AddDbContext<FXDataContext>(options => options.UseSqlite(Configuration.GetConnectionString("FXDataContext")));
+            services.AddDbContext<FXDataContext>(options => options.UseSqlite(Configuration.GetConnectionString("FXDataContext")));
 
             // Add InMemoryDB for quick dev
-            services.AddDbContext<FXDataContext>(options => options.UseInMemoryDatabase(databaseName: "FXMemoryDB"));
+            // services.AddDbContext<FXDataContext>(options => options.UseInMemoryDatabase(databaseName: "FXMemoryDB"));
 
 
             // TODO: Add & Configure SQL Database for Prod

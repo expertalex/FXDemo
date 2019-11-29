@@ -130,7 +130,7 @@ namespace FXDemo.Controllers.API
             var player = await _service.RemovePlayer(id);
 
             return Ok();
-            return player;
+            // return player;
         }
 
         private bool PlayerExists(int id)

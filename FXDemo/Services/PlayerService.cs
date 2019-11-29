@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
 using FXDemo.Contracts;
 using FXDemo.Data;
 using System.Linq;

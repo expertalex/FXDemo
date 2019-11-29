@@ -23,10 +23,6 @@ namespace FXDemo.Controllers.API
    
         private readonly IMatchService _service;
 
-
-        // Remove
-        private readonly FXDataContext _context;
-
         public MatchController(IMatchService service)
         {
             _service = service;
@@ -65,11 +61,6 @@ namespace FXDemo.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            if(match.AwayTeam.Count != 11 || match.HouseTeam.Count != 11)
-            {
-                return BadRequest("Invalid Length");
-            }
-
             // _context.Entry(match).State = EntityState.Modified;
 
             try
@@ -89,7 +80,7 @@ namespace FXDemo.Controllers.API
             }
 
             return Ok();
-            return NoContent();
+            // return NoContent();
         }
 
         // POST: api/Match
@@ -104,9 +95,12 @@ namespace FXDemo.Controllers.API
             }
 
             var matchResponce = await _service.AddMatchAsync(match);
+            if (matchResponce == null)
+            {
+                return BadRequest(ModelState);
+            }
 
-
-            return Ok();
+            return Ok(matchResponce);
 
             // return CreatedAtAction("GetMatch", new { id = matchResponce.Id }, matchResponce);
         }
@@ -115,6 +109,7 @@ namespace FXDemo.Controllers.API
         [HttpDelete("{id}")]
         public async Task<ActionResult<MatchResponse>> DeleteMatch(int id)
         {
+            // TODO: Refactor
             var match = await _service.getContext().Match.FindAsync(id);
             if (match == null)
             {
@@ -129,6 +124,7 @@ namespace FXDemo.Controllers.API
 
         private bool MatchExists(int id)
         {
+            // TODO: Refactor
             return _service.getContext().Match.Any(e => e.Id == id);
         }
     }

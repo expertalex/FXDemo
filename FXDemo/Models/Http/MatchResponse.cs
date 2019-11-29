@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text.Json.Serialization;
 using FXDemo.Contracts;
 
@@ -25,9 +26,24 @@ namespace FXDemo.Models.Http
 
         public Referee Referee { get; set; }
 
+        // [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd'T'HH:mm:ssZ}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:s}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
+
+        /*
+
+        public MatchResponse(Match match)
+        {
+            Name = match.Name;
+            HouseTeamManager = match.HouseTeamManager;
+            AwayTeamManager = match.AwayTeamManager;
+            Referee = match.Referee;
+            Date = match.Date;
+            HouseTeamPlayers = match.HouseTeamPlayers.Select(o => o.Player).ToList();
+            AwayTeamPlayers = match.AwayTeamPlayers.Select(o => o.Player).ToList();
+        }
+        */
 
     }
 }

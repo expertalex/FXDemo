@@ -45,13 +45,14 @@ namespace FXDemo.Models
         public int RefereeId { get; set; }
         public Referee Referee { get; set; }
 
+
+        // Format: {0:s}
+        // [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd'T'HH:mm:ssZ}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:s}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+
         public DateTime Date { get; set; }
 
-        public static implicit operator Match(EntityEntry<Match> v)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

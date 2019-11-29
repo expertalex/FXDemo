@@ -37,8 +37,7 @@ namespace FXWorker
                 var _response = await response.Content.ReadAsStringAsync();
                 cards = JsonConvert.DeserializeObject<List<CardResponse>>(_response);
 
-
-                // TODO: Test
+                // TODO: Test Responce
                 // cards = await response.Content.ReadAsAsync<List<CardResponse>>();
 
                 return cards;
@@ -50,7 +49,8 @@ namespace FXWorker
         static async Task<HttpStatusCode> PostIncorrectAlignmentAsync(Array body)
         {
             HttpResponseMessage response = await client.PostAsJsonAsync(
-                "api/IncorrectAlignment", body);
+                "api/IncorrectAlignment", JsonConvert.SerializeObject(body));
+            // TODO: Test Serialie
 
             response.EnsureSuccessStatusCode();
 
