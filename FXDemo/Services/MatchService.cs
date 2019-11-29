@@ -89,7 +89,7 @@ namespace FXDemo.Services
             // 2. Test
             // 3. Refacture
 
-            // Important: Not eficient, refactoring needed
+            // Important: Not eficient, refactoring needed (Shood be uinique? Maybe use Sets insted!)
             ICollection<int> housePlayersId = match.HouseTeam.Where(c => c > 0).ToList();
             ICollection<int> awayPlayersId = match.AwayTeam.Where(c => c > 0).ToList();
             var houseManagerId = match.HouseTeam.Where(c => c < 0).FirstOrDefault(); // By convention, mnagers have negative id (TODO: Refacotr)
