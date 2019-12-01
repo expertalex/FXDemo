@@ -23,6 +23,7 @@ namespace FXWorker
     public class Program
     {
 
+        private const string ServerUrl = "https://demofxapp.azurewebsites.net/";
 
 
         static HttpClient client = new HttpClient();
@@ -88,6 +89,7 @@ namespace FXWorker
 
                 // 3. Find who has 5 yellow cards or 1 red card. (I undertood == not >=)
                 // 4. Combine both by id Set
+                // TODO: Refactor and add filters in Controleler for better functionality
                 foreach (CardResponse card in redCards)
                 {
                     if(card.Total == 1)

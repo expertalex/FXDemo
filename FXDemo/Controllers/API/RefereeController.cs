@@ -9,6 +9,7 @@ using FXDemo.Data;
 using FXDemo.Models;
 using FXDemo.Models.Http;
 using AutoMapper;
+using FXDemo.Contracts;
 
 namespace FXDemo.Controllers.API
 {
@@ -20,6 +21,10 @@ namespace FXDemo.Controllers.API
     [ApiController]
     public class RefereeController : ControllerBase
     {
+
+        private readonly IRefereeService _service;
+
+        // TODO: Removwe and Add Repository
         private readonly FXDataContext _context;
         private readonly IConfigurationProvider _mappingConfiguration;
 

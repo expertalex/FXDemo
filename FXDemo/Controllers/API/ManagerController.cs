@@ -10,6 +10,7 @@ using FXDemo.Models;
 using AutoMapper;
 using FXDemo.Models.Http;
 using AutoMapper.QueryableExtensions;
+using FXDemo.Contracts;
 
 namespace FXDemo.Controllers.API
 {
@@ -21,8 +22,11 @@ namespace FXDemo.Controllers.API
     [ApiController]
     public class ManagerController : ControllerBase
     {
-        private readonly FXDataContext _context;
 
+        private readonly IManagerService _service;
+
+        // TODO: Removwe and Add Repository
+        private readonly FXDataContext _context;
         private readonly IConfigurationProvider _mappingConfiguration;
 
         public ManagerController(FXDataContext context, IConfigurationProvider mappingConfiguration)

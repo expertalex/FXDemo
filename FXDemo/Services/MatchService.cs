@@ -18,8 +18,6 @@ namespace FXDemo.Services
         public const int PlayersPerMatch = 11; // 11 Players per match and Team
 
         private readonly FXDataContext _context;
-
-        // TODO: Can i make automaper work??? 
         private readonly AutoMapper.IConfigurationProvider _mappingConfiguration;
 
         public MatchService(

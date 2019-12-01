@@ -44,11 +44,6 @@ namespace FXDemo.Infrastructure
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.YellowCards));
 
 
-            // TODO: Remove 2
-            CreateMap<PlayerRequest, PlayerResponse>();
-            CreateMap<Player, PlayerRequest>();
-
-
         }
     }
 }

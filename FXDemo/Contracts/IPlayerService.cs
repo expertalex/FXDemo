@@ -10,9 +10,6 @@ namespace FXDemo.Contracts
     public interface IPlayerService
     {
 
-        // TODO: Remove
-        FXDataContext getContext();
-
         Task<IEnumerable<PlayerResponse>> GetPlayersAsync();
 
         Task<PlayerResponse> GetPlayerAsync(int id);

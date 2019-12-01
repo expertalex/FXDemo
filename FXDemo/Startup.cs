@@ -41,25 +41,14 @@ namespace FXDemo
 
             services.AddControllersWithViews(options =>
             {
-
                 options.Filters.Add<JsonExceptionFilter>();
-                // options.EnableEndpointRouting = false;
-
             });
-            /*
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-            .AddNewtonsoftJson( opt =>
-                // opt.SerializerSettings.MaxDepth = 64
-                // opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            );
-            */
 
             // Add Sqlite for Mac Dev
             services.AddDbContext<FXDataContext>(options => options.UseSqlite(Configuration.GetConnectionString("FXDataContext")));
 
             // Add InMemoryDB for quick dev
             // services.AddDbContext<FXDataContext>(options => options.UseInMemoryDatabase(databaseName: "FXMemoryDB"));
-
 
             // TODO: Add & Configure SQL Database for Prod
 

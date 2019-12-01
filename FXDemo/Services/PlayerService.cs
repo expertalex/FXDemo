@@ -78,7 +78,7 @@ namespace FXDemo.Services
 
             // Important:
             // Validate Team, Add if not exists....
-            await this.CheckTeamAsync(player.TeamName);
+            await CheckTeamAsync(player.TeamName);
 
             var mapper = _mappingConfiguration.CreateMapper();
 
@@ -114,12 +114,6 @@ namespace FXDemo.Services
 
             var mapper = _mappingConfiguration.CreateMapper();
             return mapper.Map<PlayerResponse>(player);
-        }
-
-
-        public FXDataContext getContext()
-        {
-            return _context;
         }
 
 
