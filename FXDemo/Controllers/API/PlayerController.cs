@@ -57,15 +57,6 @@ namespace FXDemo.Controllers.API
         public async Task<ActionResult<PlayerResponse>> PutPlayer([FromRoute] int id, [FromBody] PlayerRequest player)
         {
 
-            // This line changes the default behaviour and Creats full Player == PlayerResponce
-            // To avoid unnecesary module creation, the base Player module is uses as more complete, responce moduel.
-            player.Id = id;
-
-            if (id != player.Id)
-            {
-                return BadRequest();
-            }
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -73,15 +64,19 @@ namespace FXDemo.Controllers.API
 
             // _service.getContext().Entry(player).State = EntityState.Modified;
 
-
             try
             {
-                var playerResponce = await _service.UpdatePlayer(player);
+                var playerResponce = await _service.UpdatePlayer(player, id);
+                if(playerResponce == null)
+                {
+                    return NotFound();
+                }
                 return Ok(playerResponce);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PlayerExists(id))
+                var playerFound = await _service.FindAsync(id);
+                if (playerFound == null)
                 {
                     return NotFound();
                 }
@@ -100,8 +95,6 @@ namespace FXDemo.Controllers.API
         [HttpPost]
         public async Task<ActionResult<PlayerResponse>> PostPlayer([FromBody] PlayerRequest player)
         {
-            player.Id = 0;
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -109,7 +102,7 @@ namespace FXDemo.Controllers.API
 
             var playerResponce = await _service.AddPlayer(player);
 
-            return CreatedAtAction("GetPlayer", new { id = player.Id }, playerResponce);
+            return CreatedAtAction("GetPlayer", new { id = playerResponce.Id }, playerResponce);
         }
 
         // DELETE: api/Player/5
@@ -121,21 +114,15 @@ namespace FXDemo.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            if (!PlayerExists(id))
+            var player = await _service.RemovePlayer(id);
+            if (player== null)
             {
                 return NotFound();
             }
-
-            // TODO: Refactor, doble call...
-            var player = await _service.RemovePlayer(id);
 
             return Ok();
             // return player;
         }
 
-        private bool PlayerExists(int id)
-        {
-            return _service.getContext().Player.Any(e => e.Id == id);
-        }
     }
 }

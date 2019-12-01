@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace FXDemo.Models
 {
@@ -21,6 +22,7 @@ namespace FXDemo.Models
         public string TeamName { get; set; }
 
         [NotMapped]
+        [JsonIgnore]
         public string Id
         {
             get
@@ -34,6 +36,7 @@ namespace FXDemo.Models
         }
 
         [NotMapped]
+        [JsonIgnore]
         public string Name {
             get{
                 return this.TeamName;
@@ -44,9 +47,10 @@ namespace FXDemo.Models
             }
         }
 
-
+        [JsonIgnore]
         public ICollection<Player> Players { get; set; }
 
+        [JsonIgnore]
         public ICollection<Manager> Managers { get; set; }
 
 

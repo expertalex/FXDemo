@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using AutoMapper;
 using FXDemo.Models;
 using FXDemo.Models.Http;
@@ -21,7 +22,9 @@ namespace FXDemo.Infrastructure
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => -src.Id)); // Very Important in order to return -n as id for Managers
 
             CreateMap<MatchRequest, Match>();
-            CreateMap<Match, MatchResponse>();
+            CreateMap<Match, MatchResponse>()
+                .ForMember(dest => dest.HouseTeamPlayers, opt => opt.MapFrom(src => src.HouseTeamPlayers.Select(o => o.Player).ToList()))
+                .ForMember(dest => dest.AwayTeamPlayers, opt => opt.MapFrom(src => src.AwayTeamPlayers.Select(o => o.Player).ToList()));
 
 
             CreateMap<Player, MinuteResponse>()

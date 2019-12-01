@@ -4,69 +4,66 @@ using FXDemo.Models;
 namespace FXDemo.Contracts
 {
 
-    public interface IParticipantId
+    interface IParticipantId
     {
         int Id { get; set; }
     }
 
-    public interface IPlayeTime
+    interface IPlayeTime
     {
-        public int MinutesPlayed { get; set; }
+        int MinutesPlayed { get; set; }
     }
 
-    public interface IParticipantName
+    interface IParticipantName
     {
-        public string Name { get; set; }
+        string Name { get; set; }
     }
 
-    public interface ITeamMember
+    interface ITeamMember
     {
-        public string TeamName { get; set; }
-        public Team Team { get; set; }
+        string TeamName { get; set; }
+        Team Team { get; set; }
 
-        public bool IsPlayer();
-        public bool IsManager();
-    }
-
-
-    public interface ICardOwner
-    {
-        public int RedCards { get; set; }
-        public int YellowCards { get; set; }
-    }
-
-
-    // TODO: Remove IParticipantId
-    public interface IPlayer : IParticipantId, IParticipantName, ICardOwner, IPlayeTime
-    {
-        public int Number { get; set; }
-        public string TeamName { get; set; }
-
-    }
-
-    public interface IReferee : IParticipantName, IPlayeTime
-    {
-    }
-
-    public interface IManager : IParticipantName, ICardOwner
-    {
-        public string TeamName { get; set; }
+        public int ControllerId { get; }
 
     }
 
 
-    public interface IMatch 
+    interface ICardOwner
     {
-        // TODO
-        public string Name { get; set; }
-        public DateTime Date { get; set; }
+        int RedCards { get; set; }
+        int YellowCards { get; set; }
     }
 
-    public interface IGeneralReport
+    interface IPlayer : IParticipantName, ICardOwner, IPlayeTime
+    {
+        int Number { get; set; }
+        string TeamName { get; set; }
+
+    }
+
+    interface IReferee : IParticipantName, IPlayeTime
+    {
+    }
+
+    interface IManager : IParticipantName, ICardOwner
+    {
+        string TeamName { get; set; }
+
+    }
+
+
+    interface IMatch 
+    {
+        string Name { get; set; }
+        DateTime Date { get; set; }
+    }
+
+    interface IGeneralReport
     {
         int Id { get; set; }
-        public string Name { get; set; }
-        public int Total { get; set; }
+        string Name { get; set; }
+        int Total { get; set; }
     }
 
 

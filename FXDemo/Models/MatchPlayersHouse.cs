@@ -7,6 +7,7 @@ namespace FXDemo.Models
 {
     public class MatchPlayersHouse
     {
+        // TODO: Remove id and have composit PlayerId & MatchId
         [Key]
         public int Id { get; set; }
 

@@ -15,6 +15,8 @@ namespace FXDemo.Services
 {
     public class MatchService : IMatchService
     {
+        public const int PlayersPerMatch = 11; // 11 Players per match and Team
+
         private readonly FXDataContext _context;
 
         // TODO: Can i make automaper work??? 
@@ -30,54 +32,31 @@ namespace FXDemo.Services
         public async Task<MatchResponse> GetMatcheAsync(int id)
         {
 
-            // TODO: Refactor.... 
-            var match = await _context.Match.Where(m => m.Id == id).
-                Select(s => new MatchResponse
-                {
-                    Name = s.Name,
-                    HouseTeamManager = s.HouseTeamManager,
-                    AwayTeamManager = s.AwayTeamManager,
-                    Referee = s.Referee,
-                    Date = s.Date,
-                    HouseTeamPlayers = s.HouseTeamPlayers.Select(o => o.Player).ToList(),
-                    AwayTeamPlayers = s.AwayTeamPlayers.Select(o => o.Player).ToList(),
-                }
-            ).FirstOrDefaultAsync();
+            var match = await _context.Match
+                .Include(m => m.AwayTeamManager)
+                .Include(m => m.HouseTeamManager)
+                .Include(m => m.Referee)
+                .Include(m => m.HouseTeamPlayers).ThenInclude(m => m.Player)
+                .Include(m => m.AwayTeamPlayers).ThenInclude(m => m.Player)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            /*
-            .Include(ma => ma.AwayTeamManager)
-            .Include(mh => mh.HouseTeamManager)
-            .Include(r => r.Referee)
-            .Include(ht => ht.HouseTeamPlayers).ThenInclude(htp => htp.Player) // Cuse Self Reinforsing Loop
-            .Include(ap => ap.AwayTeamPlayers).ThenInclude(app => app.Player) // Cuse Self Reinforsing Loop
-            .FirstOrDefaultAsync(m => m.Id == id);
-            */
             if (match == null)
             {
                 return null;
             }
-
-            return match;
+            var mapper = _mappingConfiguration.CreateMapper();
+            return mapper.Map<MatchResponse>(match);
 
         }
 
         public async Task<IEnumerable<MatchResponse>> GetMatcheAsync()
         {
-            // TODO: Refactor.... (Manual mpping is not good.... )
-            var match = await _context.Match.
-                Select(s => new MatchResponse
-                {
-                    Name = s.Name,
-                    HouseTeamManager = s.HouseTeamManager,
-                    AwayTeamManager = s.AwayTeamManager,
-                    Referee = s.Referee,
-                    Date = s.Date,
-                    HouseTeamPlayers = s.HouseTeamPlayers.Select(o => o.Player).ToList(),
-                    AwayTeamPlayers = s.AwayTeamPlayers.Select(o => o.Player).ToList(),
-                }
-            ).ToListAsync();
 
-            return match;
+            var query = _context.Match.ProjectTo<MatchResponse>(_mappingConfiguration);
+
+            var responce = await query.ToListAsync();
+
+            return responce;
 
         }
 
@@ -100,7 +79,7 @@ namespace FXDemo.Services
             {
                 return null;
             }
-            if (housePlayersId.Count() != 11 || awayPlayersId.Count() != 11)
+            if (housePlayersId.Count() != PlayersPerMatch || awayPlayersId.Count() != PlayersPerMatch)
             {
                 return null;
             }
@@ -201,29 +180,32 @@ namespace FXDemo.Services
                 }
             }
             var mapper = _mappingConfiguration.CreateMapper();
-            //return mapper.Map<MatchResponse>(_match);
-            // TODO: Map each child porpertyes to Responce
-            return new MatchResponse
-            {
-                Name = _match.Name,
-                HouseTeamManager = _match.HouseTeamManager,
-                AwayTeamManager = _match.AwayTeamManager,
-                Referee = _match.Referee,
-                Date = _match.Date,
-                HouseTeamPlayers = _match.HouseTeamPlayers.Select(o => o.Player).ToList(),
-                AwayTeamPlayers = _match.AwayTeamPlayers.Select(o => o.Player).ToList(),
-            };
+            return mapper.Map<MatchResponse>(_match);
+           
 
         }
 
         public async Task<MatchResponse> FindMatchAsync(int id)
         {
-            throw new NotImplementedException();
+            var match = await _context.Match.FindAsync(id);
+
+            var mapper = _mappingConfiguration.CreateMapper();
+            return mapper.Map<MatchResponse>(match);
         }
 
         public async Task<MatchResponse> RemoveMatchAsync(int id)
         {
-            throw new NotImplementedException();
+            var match = await _context.Match.FindAsync(id);
+            if (match == null)
+            {
+                return null;
+            }
+
+            _context.Match.Remove(match);
+            await _context.SaveChangesAsync();
+
+            var mapper = _mappingConfiguration.CreateMapper();
+            return mapper.Map<MatchResponse>(match);
         }
 
         public async Task<MatchResponse> UpdateMatchAsync(MatchRequest match, int id)
@@ -232,11 +214,15 @@ namespace FXDemo.Services
             // 2. Test
             // 3. Refacture
 
-            return null;
+            var existingMatch = await _context.Match.FindAsync(id);
+            if(existingMatch== null)
+            {
+                return null;
+            }
 
             // Important: Not eficient, refactoring needed (Shood be uinique? Maybe use Sets insted!)
-            ICollection<int> housePlayersId = match.HouseTeam.Where(c => c > 0).ToList();
-            ICollection<int> awayPlayersId = match.AwayTeam.Where(c => c > 0).ToList();
+            ICollection<int> housePlayersId = match.HouseTeam.Where(c => c > 0).ToHashSet();
+            ICollection<int> awayPlayersId = match.AwayTeam.Where(c => c > 0).ToHashSet();
             var houseManagerId = match.HouseTeam.Where(c => c < 0).FirstOrDefault(); // By convention, mnagers have negative id (TODO: Refacotr)
             var awayManagerId = match.AwayTeam.Where(c => c < 0).FirstOrDefault(); // By convention, mnagers have negative id (TODO: Refacotr)
 
@@ -249,7 +235,7 @@ namespace FXDemo.Services
             {
                 return null;
             }
-            if (housePlayersId.Count() != 11 || awayPlayersId.Count() != 11)
+            if (housePlayersId.Count() != PlayersPerMatch || awayPlayersId.Count() != PlayersPerMatch)
             {
                 return null;
             }
@@ -269,94 +255,92 @@ namespace FXDemo.Services
                 return null;
             }
 
-            var _match = new Match
-            {
-                Name = match.Name,
-                HouseTeamManagerId = houseManagerId,
-                AwayTeamManagerId = awayManagerId,
-                RefereeId = match.Referee,
-                Date = match.Date,
-            };
+            existingMatch.Name = match.Name;
+            existingMatch.HouseTeamManagerId = houseManagerId;
+            existingMatch.AwayTeamManagerId = awayManagerId;
+            existingMatch.RefereeId = match.Referee;
+            existingMatch.Date = match.Date;
+            existingMatch.HouseTeamPlayers = new List<MatchPlayersHouse>();
+            existingMatch.AwayTeamPlayers = new List<MatchPlayersAway>();
 
             // Cimented for in memeory DB 
-            //using (var transaction = _context.Database.BeginTransaction())
-            //{
-
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
 
-                await _context.Match.AddAsync(_match);
-                await _context.SaveChangesAsync();
-
-                foreach (int playerId in housePlayersId)
+                try
                 {
-                    var player = await _context.Player.FindAsync(playerId);
-                    if (player == null)
+                    _context.Match.Update(existingMatch);
+
+                    // Hack
+                    // Remove table before insert new...
+                    // TODO: Add relationship to ensure automatic update
+                    _context.MatchPlayersHouse.RemoveRange(_context.MatchPlayersHouse.Where(m => m.MatchId == existingMatch.Id));
+                    _context.MatchPlayersAway.RemoveRange(_context.MatchPlayersAway.Where(m => m.MatchId == existingMatch.Id));
+                    await _context.SaveChangesAsync();
+
+                    foreach (int playerId in housePlayersId)
                     {
-                        throw new ArgumentException("Player not found");
+                        var player = await _context.Player.FindAsync(playerId);
+                        if (player == null)
+                        {
+                            throw new ArgumentException("Player not found");
+                        }
+                        if (player.TeamName != houseManager.TeamName)
+                        {
+                            throw new ArgumentException("Team not Match");
+                        }
+
+                        var matchInDataBase = _context.MatchPlayersHouse.Where(
+                                    s =>
+                                    s.Match.Id == existingMatch.Id &&
+                                    s.Player.Id == playerId
+                        ).SingleOrDefault();
+
+                        if (matchInDataBase == null)
+                        {
+                            _context.MatchPlayersHouse.Update(new MatchPlayersHouse { MatchId = existingMatch.Id, PlayerId = playerId });
+                        }
                     }
 
-                    var matchInDataBase = _context.MatchPlayersHouse.Where(
-                                s =>
-                                s.Match.Id == _match.Id &&
-                                s.Player.Id == playerId
-                    ).SingleOrDefault();
-
-                    if (matchInDataBase == null)
+                    foreach (int playerId in awayPlayersId)
                     {
-                        await _context.MatchPlayersHouse.AddAsync(new MatchPlayersHouse { MatchId = _match.Id, PlayerId = playerId });
-                    }
-                    else
-                    {
+                        var player = await _context.Player.FindAsync(playerId);
+                        if (player == null)
+                        {
+                            throw new ArgumentException("Player not found");
+                        }
+                        if (player.TeamName != awayManager.TeamName)
+                        {
+                            throw new ArgumentException("Team not Match");
+                        }
 
+                        var matchInDataBase = _context.MatchPlayersAway.Where(
+                                    s =>
+                                    s.Match.Id == existingMatch.Id &&
+                                    s.Player.Id == playerId
+                        ).SingleOrDefault();
+
+                        if (matchInDataBase == null)
+                        {
+                            _context.MatchPlayersAway.Update(new MatchPlayersAway { MatchId = existingMatch.Id, PlayerId = playerId });
+                        }
                     }
+
+                    await _context.SaveChangesAsync();
+                    // Commit transaction if all commands succeed, transaction will auto-rollback
+                    // when disposed if either commands fails
+                    transaction.Commit();
+
                 }
-
-                foreach (int playerId in awayPlayersId)
+                catch (Exception)
                 {
-                    var player = await _context.Player.FindAsync(playerId);
-                    if (player == null)
-                    {
-                        throw new ArgumentException("Player not found");
-                    }
-
-                    var matchInDataBase = _context.MatchPlayersAway.Where(
-                                s =>
-                                s.Match.Id == _match.Id &&
-                                s.Player.Id == playerId
-                    ).SingleOrDefault();
-
-                    if (matchInDataBase == null)
-                    {
-                        await _context.MatchPlayersAway.AddAsync(new MatchPlayersAway { MatchId = _match.Id, PlayerId = playerId });
-                    }
+                    // TODO: Handle failure
+                    return null;
                 }
-
-                await _context.SaveChangesAsync();
-                // Commit transaction if all commands succeed, transaction will auto-rollback
-                // when disposed if either commands fails
-                //transaction.Commit();
-
             }
-            catch (Exception)
-            {
-                // TODO: Handle failure
-                return null;
-            }
-            //}
+
             var mapper = _mappingConfiguration.CreateMapper();
-            //return mapper.Map<MatchResponse>(_match);
-            // TODO: Map each child porpertyes to Responce
-            return new MatchResponse
-            {
-                Name = _match.Name,
-                HouseTeamManager = _match.HouseTeamManager,
-                AwayTeamManager = _match.AwayTeamManager,
-                Referee = _match.Referee,
-                Date = _match.Date,
-                HouseTeamPlayers = _match.HouseTeamPlayers.Select(o => o.Player).ToList(),
-                AwayTeamPlayers = _match.AwayTeamPlayers.Select(o => o.Player).ToList(),
-            };
+            return mapper.Map<MatchResponse>(existingMatch);
         }
 
         // TODO: Remove

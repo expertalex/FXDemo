@@ -19,10 +19,11 @@ namespace FXDemo.Contracts
 
         Task<PlayerResponse> AddPlayer(PlayerRequest player);
 
-        Task<PlayerResponse> UpdatePlayer(PlayerRequest player);
+        Task<PlayerResponse> UpdatePlayer(PlayerRequest player, int id);
 
         Task<PlayerResponse> RemovePlayer(int id);
 
         Task<PlayerResponse> FindAsync(int id);
+
     }
 }

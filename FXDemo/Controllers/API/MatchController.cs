@@ -114,22 +114,18 @@ namespace FXDemo.Controllers.API
         [HttpDelete("{id}")]
         public async Task<ActionResult<MatchResponse>> DeleteMatch(int id)
         {
-            // TODO: Refactor
-            var match = await _service.getContext().Match.FindAsync(id);
+            var match = await _service.RemoveMatchAsync(id);
             if (match == null)
             {
                 return NotFound();
             }
-
-            _service.getContext().Match.Remove(match);
-            await _service.getContext().SaveChangesAsync();
 
             return Ok();
         }
 
         private bool MatchExists(int id)
         {
-            // TODO: Refactor
+            // TODO: Refactor Remove
             return _service.getContext().Match.Any(e => e.Id == id);
         }
     }

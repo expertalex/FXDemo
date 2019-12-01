@@ -15,7 +15,7 @@ namespace FXDemo.Models.Http
         public string Name { get; set; }
 
         // Important: One match always will have only 2 Teams:
-        // 2 Managers and 22 Players (11 per Team) in total
+        // 2 Managers and 22 Players in total (11 players + 1 Manager per Team)
         public ICollection<Player> HouseTeamPlayers { get; set; }
 
         public ICollection<Player> AwayTeamPlayers { get; set; }
@@ -28,11 +28,10 @@ namespace FXDemo.Models.Http
 
         // [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd'T'HH:mm:ssZ}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:s}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd'T'HH:mm:ssZ}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
 
         /*
-
         public MatchResponse(Match match)
         {
             Name = match.Name;

@@ -19,10 +19,10 @@ namespace FXDemo.Models
         public string Name { get; set; }
 
         // Important: One match always will have only 2 Teams:
-        // 2 Managers and 22 Players (11 per Team) in total
-        public ICollection<MatchPlayersHouse> HouseTeamPlayers { get; set; }
-
-        public ICollection<MatchPlayersAway> AwayTeamPlayers { get; set; }
+        // 2 Managers and 22 Players (11 per Team) in total (in this design for simplicity one player can be in both matches)
+        // If in each match 22 players always shood be unique, we can refactor the desing and have only one TeamPlayers table and filter by team
+        public ICollection<MatchPlayersHouse> HouseTeamPlayers { get; set; } = new List<MatchPlayersHouse>();
+        public ICollection<MatchPlayersAway> AwayTeamPlayers { get; set; } = new List<MatchPlayersAway>();
 
 
         // It indicates that a match has one, and only one, HouseTeamManager.
@@ -50,7 +50,6 @@ namespace FXDemo.Models
         // [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd'T'HH:mm:ssZ}", ApplyFormatInEditMode = true)]
         [DisplayFormat(DataFormatString = "{0:s}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
-
         public DateTime Date { get; set; }
 
 

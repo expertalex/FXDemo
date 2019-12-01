@@ -5,7 +5,7 @@ using FXDemo.Contracts;
 namespace FXDemo.Models.Http
 
 {
-    public class PlayerResponse : IPlayer
+    public class PlayerResponse : IParticipantId, IPlayer
     {
         public int Id { get; set; }
         public string Name { get; set; }

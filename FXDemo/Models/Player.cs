@@ -73,15 +73,6 @@ namespace FXDemo.Models
             }
         }
 
-        public bool IsManager()
-        {
-            return this.ControllerId < 0;
-        }
-
-        public bool IsPlayer()
-        {
-            return this.ControllerId > 0;
-        }
 
 
     }

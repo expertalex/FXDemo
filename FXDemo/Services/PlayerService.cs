@@ -34,8 +34,6 @@ namespace FXDemo.Services
             var responce = await query.ToListAsync();
 
             return responce;
-
-            // return await _context.Player.ToListAsync();
         }
 
 
@@ -50,8 +48,6 @@ namespace FXDemo.Services
 
             var mapper = _mappingConfiguration.CreateMapper();
             return mapper.Map<PlayerResponse>(player);
-            
-            // return new PlayerResponse(player);
 
         }
 
@@ -60,30 +56,37 @@ namespace FXDemo.Services
         {
             // Important:
             // Validate Team, Add if not exists....
-            await this.checkTeamAsync(player.TeamName);
+            await this.CheckTeamAsync(player.TeamName);
 
             var mapper = _mappingConfiguration.CreateMapper();
 
             var _player = mapper.Map<Player>(player);
 
-            var _p = await _context.Player.AddAsync(_player);
+            await _context.Player.AddAsync(_player);
             await _context.SaveChangesAsync();
 
             return mapper.Map<PlayerResponse>(_player);
         }
 
-        public async Task<PlayerResponse> UpdatePlayer(PlayerRequest player)
+        public async Task<PlayerResponse> UpdatePlayer(PlayerRequest player, int id)
         {
+            var existingPlayer = await _context.Player.FindAsync(id);
+            if (existingPlayer == null)
+            {
+                return null;
+            }
+
             // Important:
             // Validate Team, Add if not exists....
-            await this.checkTeamAsync(player.TeamName);
+            await this.CheckTeamAsync(player.TeamName);
 
             var mapper = _mappingConfiguration.CreateMapper();
 
-            var p = _context.Player.Update(mapper.Map<Player>(player));
+            mapper.Map(player, existingPlayer);
+            _context.Player.Update(existingPlayer);
             await _context.SaveChangesAsync();
 
-            return mapper.Map<PlayerResponse>(player);
+            return mapper.Map<PlayerResponse>(existingPlayer);
         }
 
 
@@ -104,12 +107,6 @@ namespace FXDemo.Services
         }
 
 
-
-        public async Task<bool> Exists(int id)
-        {
-            return await _context.Player.AnyAsync(e => e.Id == id);
-        }
-
         public async Task<PlayerResponse> FindAsync(int id)
         {
 
@@ -126,15 +123,15 @@ namespace FXDemo.Services
         }
 
 
-        public async Task checkTeamAsync(string name)
+        public async Task CheckTeamAsync(string name)
         {
             // Important:
             // Validate Team, Add if not exists....
-            // TODO: Refactor
+            // TODO: Refactor and add in atomic transaction
             var team = await _context.Team.FindAsync(name);
             if (team == null)
             {
-                _context.Team.Add(new Team { TeamName = name });
+                await _context.Team.AddAsync(new Team { TeamName = name });
                 // _context.SaveChangesAsync();
             }
         }

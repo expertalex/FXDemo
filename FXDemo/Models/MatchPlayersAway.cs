@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -6,6 +7,8 @@ namespace FXDemo.Models
 {
     public class MatchPlayersAway
     {
+        // TODO: Remove id and have composit PlayerId & MatchId
+        [Key]
         public int Id { get; set; }
 
         [ForeignKey("Player")]
