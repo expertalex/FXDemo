@@ -26,7 +26,6 @@ namespace FXDemo.Models.Http
 
         public RefereeResponse Referee { get; set; }
 
-        // [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd'T'HH:mm:ssZ}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd'T'HH:mm:ssZ}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }

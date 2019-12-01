@@ -10,13 +10,14 @@ using FXDemo.Models;
 using FXDemo.Models.Http;
 using AutoMapper;
 using FXDemo.Contracts;
+using AutoMapper.QueryableExtensions;
 
 namespace FXDemo.Controllers.API
 {
 
     // TODO:
     // 1) Add IRefereeService (Repository Pattern)
-    // 2) Add AutoMapper -> {Name}Request and {Name}Responce and remove manual id={id} maping
+    // 2) Add RefereeResponce
     [Route("api/[controller]")]
     [ApiController]
     public class RefereeController : ControllerBase
@@ -36,14 +37,19 @@ namespace FXDemo.Controllers.API
 
         // GET: api/Referee
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Referee>>> GetReferee()
+        public async Task<ActionResult<IEnumerable<RefereeResponse>>> GetReferee()
         {
-            return await _context.Referee.ToListAsync();
+            var query = _context.Referee.ProjectTo<RefereeResponse>(_mappingConfiguration);
+
+            var responce = await query.ToListAsync();
+
+            return responce;
+
         }
 
         // GET: api/Referee/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Referee>> GetReferee(int id)
+        public async Task<ActionResult<RefereeResponse>> GetReferee(int id)
         {
             var referee = await _context.Referee.FindAsync(id);
 
@@ -52,7 +58,8 @@ namespace FXDemo.Controllers.API
                 return NotFound();
             }
 
-            return referee;
+            var mapper = _mappingConfiguration.CreateMapper();
+            return mapper.Map<RefereeResponse>(referee);
         }
 
         // PUT: api/Referee/5
@@ -108,7 +115,7 @@ namespace FXDemo.Controllers.API
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Referee>> PostReferee(RefereeRequest referee)
+        public async Task<ActionResult<RefereeResponse>> PostReferee(RefereeRequest referee)
         {
             // TODO: Refactor in Request and Reponce (Quico fix)
             // referee.Id = 0;
@@ -123,13 +130,13 @@ namespace FXDemo.Controllers.API
             _context.Referee.Add(createdRefere);
             await _context.SaveChangesAsync();
 
-            // TODO: Return 200???? 
-            return CreatedAtAction("GetReferee", new { id = createdRefere.Id }, createdRefere);
+            // TODO: Return 200????
+            return CreatedAtAction("GetReferee", new { id = createdRefere.Id }, mapper.Map<RefereeResponse>(createdRefere));
         }
 
         // DELETE: api/Referee/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Referee>> DeleteReferee(int id)
+        public async Task<ActionResult<RefereeResponse>> DeleteReferee(int id)
         {
             var referee = await _context.Referee.FindAsync(id);
             if (referee == null)
@@ -140,7 +147,8 @@ namespace FXDemo.Controllers.API
             _context.Referee.Remove(referee);
             await _context.SaveChangesAsync();
 
-            return referee;
+            var mapper = _mappingConfiguration.CreateMapper();
+            return mapper.Map<RefereeResponse>(referee);
         }
 
         private bool RefereeExists(int id)
