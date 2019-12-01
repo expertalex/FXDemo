@@ -31,18 +31,6 @@ namespace FXDemo.Models.Http
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd'T'HH:mm:ssZ}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
 
-        /*
-        public MatchResponse(Match match)
-        {
-            Name = match.Name;
-            HouseTeamManager = match.HouseTeamManager;
-            AwayTeamManager = match.AwayTeamManager;
-            Referee = match.Referee;
-            Date = match.Date;
-            HouseTeamPlayers = match.HouseTeamPlayers.Select(o => o.Player).ToList();
-            AwayTeamPlayers = match.AwayTeamPlayers.Select(o => o.Player).ToList();
-        }
-        */
 
     }
 }
