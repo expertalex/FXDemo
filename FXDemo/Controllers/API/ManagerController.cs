@@ -165,7 +165,7 @@ namespace FXDemo.Controllers.API
         }
 
 
-        public async Task CheckTeamAsync(string name)
+        private async Task CheckTeamAsync(string name)
         {
             // Important:
             // Validate Team, Add if not exists....
