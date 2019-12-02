@@ -97,7 +97,7 @@ namespace FXWorker
                         allMatches.Add(card.Id);
                     }
                 }
-                foreach (CardResponse card in redCards)
+                foreach (CardResponse card in yellowCards)
                 {
                     if (card.Total == 5)
                     {
